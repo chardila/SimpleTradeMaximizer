@@ -1,4 +1,19 @@
 import networkx as nx
+def read_item_lists_from_file(file_path):
+    item_lists = {}
+    with open(file_path, 'r') as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                parts = line.split(' ')
+                participant = parts[0][1:-1]  # Remove parentheses
+                offered_item = parts[1].split(':')[0]
+                wanted_items = parts[1].split(':')[1:]
+                if participant not in item_lists:
+                    item_lists[participant] = {'offered': [], 'wanted': []}
+                item_lists[participant]['offered'].append(offered_item)
+                item_lists[participant]['wanted'].extend(wanted_items)
+    return item_lists
 
 def trade_maximizer(item_lists):
     # Create a directed graph
@@ -39,13 +54,8 @@ def trade_maximizer(item_lists):
             print(f"{sender} sends to {receiver}")
 
 def main():
-    item_lists = {
-        'Alice': {'offered': ['item1', 'item2'], 'wanted': ['item3', 'item4']},
-        'Bob': {'offered': ['item3'], 'wanted': ['item2']},
-        'Charlie': {'offered': ['item2', 'item4'], 'wanted': ['item1']},
-        'David': {'offered': ['item4'], 'wanted': ['item1', 'item3']}
-    }
-
+    file_path = 'sample01.txt'  # Replace with the actual file path
+    item_lists = read_item_lists_from_file(file_path)
     trade_maximizer(item_lists)
 
 if __name__ == "__main__":
